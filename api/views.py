@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from api.services import request_and_process_data
+from api.services import request_data, process_data
 from authentication.serializers import UserCreateSerializer
 
 
@@ -26,6 +26,5 @@ class SymbolEndpoint(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, symbol):
-
-        data = request_and_process_data(symbol)
+        data = process_data(request_data(symbol))
         return Response(data)

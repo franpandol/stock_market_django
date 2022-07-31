@@ -1,14 +1,15 @@
 import requests
+from django.conf import settings
 
 
-def request_and_process_data(symbol: str):
-    url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey=C3ZT5U5YZ3A7EUIN"
-    print(url)
-    # url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey=C3ZT5U5YZ3A7EUIN"
-
+def request_data(symbol: str):
+    url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={settings.ALPHAVANTAGE_API_KEY}"
     result = requests.get(url)
     result_json = result.json()
+    return result_json
 
+
+def process_data(result_json: dict):
     # When the symbol is not found, the API returns 200 OK with an error message:
     if result_json.get("Error Message"):
         return {"error": result_json.get("Error Message")}
@@ -39,7 +40,6 @@ def request_and_process_data(symbol: str):
     #     },...
     # }
 
-    
     last_refreshed = result_json.get("Meta Data").get("3. Last Refreshed")
     time_series = result_json.get("Time Series (Daily)")
     last_value = time_series.get(last_refreshed)
@@ -59,7 +59,7 @@ def request_and_process_data(symbol: str):
     variation_between_last_two_days = float(close_value) - float(
         day_before_last_close_value
     )
-    
+
     return {
         "last_refreshed": last_refreshed,
         "close_value": close_value,
