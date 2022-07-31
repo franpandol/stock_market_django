@@ -140,3 +140,44 @@ CACHES = {
     }
 }
 
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
+            "format": "[%(asctime)s] [%(levelname)s] %(message)s",
+            "datefmt": "%d/%b/%Y %H:%M:%S",
+        },
+    },
+    "handlers": {
+        "logfile": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": SITE_ROOT + "/logfile.log",
+            "formatter": "default",
+        },
+        "apicalls": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": SITE_ROOT + "/apicalls.log",
+            "formatter": "default",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": [
+                "logfile",
+            ],
+            "propagate": True,
+            "level": "INFO",
+        },
+        "stock_market.apicalls": {
+            "handlers": [
+                "apicalls",
+            ],
+            "level": "INFO",
+            "propagate": True,
+        },
+    },
+}

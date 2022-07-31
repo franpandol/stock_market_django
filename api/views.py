@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+from api.mixin import RequestLogMiddleware
 from api.services import process_and_request_data
 from authentication.serializers import UserCreateSerializer
 
@@ -13,13 +14,12 @@ class UserEndpoint(APIView):
         serializer = UserCreateSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            token, created = Token.objects.get_or_create(user=user)
-
+            token, _ = Token.objects.get_or_create(user=user)
             return Response(token.key)
         return Response(serializer.errors)
 
 
-class SymbolEndpoint(APIView):
+class SymbolEndpoint(RequestLogMiddleware, APIView):
     authentication_classes = [
         TokenAuthentication,
     ]
