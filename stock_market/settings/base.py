@@ -22,6 +22,7 @@ load_dotenv(dotenv_path, verbose=True)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+SITE_ROOT = os.path.realpath(os.path.dirname(__file__)) + "/.."
 # Application definition
 
 DJANGO_APPS = [
@@ -121,11 +122,21 @@ AUTH_USER_MODEL = "authentication.Account"
 
 
 REST_FRAMEWORK = {
-    "NON_FIELD_ERRORS_KEY": "messages",
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
     ),
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {"anon": "100/day", "user": "1000/day"},
 }
 
 ALPHAVANTAGE_API_KEY = os.getenv("ALPHAVANTAGE_API_KEY", "demo")
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    }
+}
+
