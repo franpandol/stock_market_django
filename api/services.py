@@ -2,6 +2,12 @@ import requests
 from django.conf import settings
 
 
+def process_and_request_data(symbol: str):
+    result_json = request_data(symbol)
+    data = process_data(result_json)
+    return data
+
+
 def request_data(symbol: str):
     url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={settings.ALPHAVANTAGE_API_KEY}"
     result = requests.get(url)
@@ -11,8 +17,8 @@ def request_data(symbol: str):
 
 def process_data(result_json: dict):
     # When the symbol is not found, the API returns 200 OK with an error message:
-    if result_json.get("Error Message"):
-        return {"error": result_json.get("Error Message")}
+    if not result_json.get("Time Series (Daily)"):
+        return {"error": result_json}
 
     # Example of successful result.json():
     # {
