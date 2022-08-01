@@ -29,3 +29,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
     def perform_create(self, validated_data):
         user = Account.objects.create(**validated_data)
         return user
+
+    def validate(self, attrs):
+        if len(attrs['email'].split('@')[0]) < 2:
+            raise serializers.ValidationError("Email must be at least 2 characters long")
+        return super().validate(attrs)
