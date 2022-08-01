@@ -77,5 +77,5 @@ def process_data(result_json: dict) -> dict:
         "open_value": open_value,
         "high_value": high_value,
         "low_value": low_value,
-        "variation_between_last_two_days": variation_between_last_two_days,
+        "variation_between_last_two_days": format(variation_between_last_two_days, '.4f'),
     }

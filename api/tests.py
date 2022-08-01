@@ -53,5 +53,5 @@ class ServicesTestCase(TestCase):
         self.assertEqual(result.get("high_value"), "131.0000")
         self.assertEqual(result.get("low_value"), "129.3100")
         self.assertEqual(
-            result.get("variation_between_last_two_days"), 1.5699999999999932
+            result.get("variation_between_last_two_days"), "1.5700"
         )
