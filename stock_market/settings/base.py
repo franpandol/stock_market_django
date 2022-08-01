@@ -11,35 +11,36 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-m$^^xjase%kwv6=d6!r$#a)yv%$$m1x)fp-53jc&s)4=i1w$9l"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-
+SITE_ROOT = os.path.realpath(os.path.dirname(__file__)) + "/.."
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+]
+
+EXTERNAL_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
 ]
+
+LOCAL_APPS = [
+    "api",
+    "authentication",
+]
+
+
+INSTALLED_APPS = DJANGO_APPS + EXTERNAL_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -70,17 +71,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "stock_market.wsgi.application"
-
-
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
 
 
 # Password validation
@@ -117,9 +107,75 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "../static")
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "../media")
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+AUTH_USER_MODEL = "authentication.Account"
+
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+    ),
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {"anon": "100/day", "user": "1000/day"},
+}
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    }
+}
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
+            "format": "[%(asctime)s] [%(levelname)s] %(message)s",
+            "datefmt": "%d/%b/%Y %H:%M:%S",
+        },
+    },
+    "handlers": {
+        "logfile": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": SITE_ROOT + "/logfile.log",
+            "formatter": "default",
+        },
+        "apicalls": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": SITE_ROOT + "/apicalls.log",
+            "formatter": "default",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": [
+                "logfile",
+            ],
+            "propagate": True,
+            "level": "INFO",
+        },
+        "stock_market.apicalls": {
+            "handlers": [
+                "apicalls",
+            ],
+            "level": "INFO",
+            "propagate": True,
+        },
+    },
+}
