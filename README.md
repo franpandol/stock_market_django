@@ -25,7 +25,7 @@ SSL Certificates by Let's Encrypt are used to secure the site. The site is acces
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. 
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. First clone the repo and then run the following commands:
 
 There are two options with two steps each:
 
