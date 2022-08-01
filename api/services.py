@@ -2,7 +2,7 @@ import requests
 from django.conf import settings
 
 
-def process_and_request_data(symbol: str):
+def process_and_request_data(symbol: str) -> dict:
     result_json = request_data(symbol)
     data = process_data(result_json)
     return data
@@ -15,8 +15,12 @@ def request_data(symbol: str):
     return result_json
 
 
-def process_data(result_json: dict):
-    # When the symbol is not found, the API returns 200 OK with an error message:
+def process_data(result_json: dict) -> dict:
+    
+    # When the symbol is not found, the ALPHAVANTAGE API returns 200 OK with an error message:
+    # so we need to check if the result_json has an error message inside it. Example: 
+    # "Error Message": "Invalid API call. Please retry or visit the documentation (https://www.alphavantage.co/documentation/) for TIME_SERIES_DAILY."
+    
     if not result_json.get("Time Series (Daily)"):
         return {"error": result_json}
 
@@ -61,6 +65,7 @@ def process_data(result_json: dict):
 
     # >>> sorted(data.items())[-2][1]
     # {'1. open': '128.7500', '2. high': '129.8100', '3. low': '128.6060', '4. close': '129.2200', '5. volume': '3913680'}
+    
     day_before_last_close_value = day_before_last.get("4. close")
     variation_between_last_two_days = float(close_value) - float(
         day_before_last_close_value

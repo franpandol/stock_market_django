@@ -16,7 +16,7 @@ class UserEndpoint(RequestLogMiddleware, APIView):
             user = serializer.save()
             token, _ = Token.objects.get_or_create(user=user)
             return Response(token.key)
-        return Response(serializer.errors)
+        return Response(serializer.errors, status=400)
 
 
 class SymbolEndpoint(RequestLogMiddleware, APIView):
@@ -27,4 +27,6 @@ class SymbolEndpoint(RequestLogMiddleware, APIView):
 
     def get(self, request, symbol):
         data = process_and_request_data(symbol)
+        if data.get('error'):
+            return Response(data, status=400)
         return Response(data)
