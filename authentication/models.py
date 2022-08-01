@@ -13,9 +13,9 @@ class LowerEmailField(models.EmailField):
 
 class Account(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    email = LowerEmailField("Correo Electrónico", unique=True)
-    name = models.CharField("Nombre", max_length=255)
-    last_name = models.CharField("Apellido", max_length=255)
+    email = LowerEmailField("Email", unique=True)
+    name = models.CharField("Name", max_length=255)
+    last_name = models.CharField("Last name", max_length=255)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["name", "last_name"]
