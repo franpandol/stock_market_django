@@ -4,12 +4,12 @@ from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from api.mixin import RequestLogMiddleware
+from api.mixins import RequestLogMiddleware
 from api.services import process_and_request_data
 from authentication.serializers import UserCreateSerializer
 
 
-class UserEndpoint(APIView):
+class UserEndpoint(RequestLogMiddleware, APIView):
     def post(self, request):
         serializer = UserCreateSerializer(data=request.data)
         if serializer.is_valid():
