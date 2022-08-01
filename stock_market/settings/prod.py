@@ -10,7 +10,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = False
 ALLOWED_HOSTS = [
-    "challenges.pandol.sh",
+    "stock-market-service.pandol.sh",
 ]
 DATABASES = {
     "default": {
