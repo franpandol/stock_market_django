@@ -1,4 +1,4 @@
-<h1 align="center">Stock Market Service</h1>
+<h1 align="center">Stock Market Service or How to present a github repository for a technical challenge</h1>
 
 ## 📝 Table of Contents
 
